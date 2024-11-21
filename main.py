@@ -3,11 +3,11 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
-# Konfigurasi Database
-DATABASE_URL = "mysql+pymysql://root@localhost/fastAPIDTT"
+# Konfigurasi Database (SQLite)
+DATABASE_URL = "sqlite:///./DB/fastApi.db" 
 
 # Koneksi ke Database
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False, "timeout": 30})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base untuk ORM
@@ -21,7 +21,7 @@ class Customer(Base):
     email = Column(String(100), unique=True, index=True)
     phone = Column(String(15), index=True)
 
-# Membuat Tabel
+# Membuat Tabel jika belum ada
 Base.metadata.create_all(bind=engine)
 
 # Inisialisasi FastAPI
@@ -37,11 +37,68 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"message": "Welcome to the Customer API"}
 
-@app.get("/customer/{cust_id}")
-def read_customer(cust_id: int, db: Session = Depends(get_db)):  # Perbaikan: Hilangkan ()
+@app.get("/customers/{cust_id}")
+def get_customer(cust_id: int, db: Session = Depends(get_db)):
+    """
+    Endpoint untuk mendapatkan detail customer berdasarkan ID.
+    """
     customer = db.query(Customer).filter(Customer.id == cust_id).first()
     if not customer:
         raise HTTPException(status_code=404, detail="Customer not found")
     return {"id": customer.id, "name": customer.name, "email": customer.email, "phone": customer.phone}
+
+@app.get("/customers")
+def get_all_customers(db: Session = Depends(get_db)):
+    """
+    Endpoint untuk mendapatkan semua data customer.
+    """
+    customers = db.query(Customer).all()
+    if not customers:
+        raise HTTPException(status_code=404, detail="No customers found")
+    return customers
+
+@app.post("/customers")
+def create_customer(name: str, email: str, phone: str, db: Session = Depends(get_db)):
+    """
+    Endpoint untuk menambahkan customer baru.
+    """
+    existing_customer = db.query(Customer).filter(Customer.email == email).first()
+    if existing_customer:
+        raise HTTPException(status_code=400, detail="Customer with this email already exists")
+    
+    new_customer = Customer(name=name, email=email, phone=phone)
+    db.add(new_customer)
+    db.commit()
+    db.refresh(new_customer)
+    return {"message": "Customer created successfully", "customer": new_customer}
+
+@app.put("/customers/{cust_id}")
+def update_customer(cust_id: int, name: str, email: str, phone: str, db: Session = Depends(get_db)):
+    """
+    Endpoint untuk memperbarui data customer berdasarkan ID.
+    """
+    customer = db.query(Customer).filter(Customer.id == cust_id).first()
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    customer.name = name
+    customer.email = email
+    customer.phone = phone
+    db.commit()
+    db.refresh(customer)
+    return {"message": "Customer updated successfully", "customer": customer}
+
+@app.delete("/customers/{cust_id}")
+def delete_customer(cust_id: int, db: Session = Depends(get_db)):
+    """
+    Endpoint untuk menghapus customer berdasarkan ID.
+    """
+    customer = db.query(Customer).filter(Customer.id == cust_id).first()
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    db.delete(customer)
+    db.commit()
+    return {"message": "Customer deleted successfully"}
