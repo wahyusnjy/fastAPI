@@ -12,72 +12,75 @@
         <h1 class="text-center mb-4">API Form</h1>
         <form id="apiForm" class="border p-4 rounded">
             <div class="mb-3">
-                <label for="id" class="form-label">ID:</label>
-                <input type="text" id="id" name="id" class="form-control" value="1" required>
-            </div>
-            <div class="mb-3">
                 <label for="name" class="form-label">Name:</label>
-                <input type="text" id="name" name="name" class="form-control" value="John Doe" required>
+                <input type="text" id="name" name="name" class="form-control" placeholder="Maukan nama" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email:</label>
-                <input type="email" id="email" name="email" class="form-control" value="john@gmail.com" required>
+                <input type="email" id="email" name="email" class="form-control" placeholder="Masuakn email" required>
             </div>
             <div class="mb-3">
                 <label for="phone" class="form-label">Phone:</label>
-                <input type="text" id="phone" name="phone" class="form-control" value="81282711" required>
+                <input type="text" id="phone" name="phone" class="form-control" placeholder="Masukan No" required>
             </div>
             <div class="d-flex justify-content-between">
                 <button type="button" id="getApiButton" class="btn btn-primary">GET API</button>
                 <button type="button" id="postApiButton" class="btn btn-success">POST API</button>
             </div>
         </form>
+        <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-secondary">
+                <a href="crud.html" style="color: white; text-decoration: none;">Show Data</a>
+            </button>
+        </div>
         <div id="response" class="mt-4 p-3 border rounded bg-light"></div>
     </div>
 
     <!-- Bootstrap JS (Cloudflare) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script>
         // URL API
         const apiUrl = 'http://127.0.0.1:8000/customers'; // Ganti dengan URL API yang sebenarnya
 
-        // Get API button
-        document.getElementById('getApiButton').addEventListener('click', async () => {
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
-            } catch (error) {
-                document.getElementById('response').innerText = 'Error: ' + error.message;
-            }
+        // GET API Button
+        $('#getApiButton').on('click', function () {
+            $.ajax({
+                url: apiUrl,
+                method: 'GET',
+                success: function (data) {
+                    $('#response').text(JSON.stringify(data, null, 2));
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#response').text('Error: ' + textStatus + ' - ' + errorThrown);
+                }
+            });
         });
 
-        // Post API button
-        document.getElementById('postApiButton').addEventListener('click', async () => {
-            // Ambil data dari form
-            const id = document.getElementById('id').value;
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
+        // POST API Button
+        $('#postApiButton').on('click', function () {
+            const payload = {
+                name: $('#name').val(),
+                email: $('#email').val(),
+                phone: $('#phone').val(),
+            };
 
-            const payload = { id, name, email, phone };
+            const queryString = $.param(payload); // Konversi objek ke string query
+            const apiUrlWithParams = `http://127.0.0.1:8000/customers?${queryString}`;
 
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                });
-
-                const data = await response.json();
-                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
-            } catch (error) {
-                document.getElementById('response').innerText = 'Error: ' + error.message;
-            }
+            $.ajax({
+                url: apiUrlWithParams, // URL dengan query parameters
+                method: 'POST',
+                success: function (data) {
+                    $('#response').text(JSON.stringify(data, null, 2));
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#response').text('Error: ' + textStatus + ' - ' + errorThrown);
+                }
+            });
         });
     </script>
+
 </body>
 </html>

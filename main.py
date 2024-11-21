@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy import create_engine, Column, Integer, String
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import create_engine, Column, Integer, String, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
 # Konfigurasi Database (SQLite)
-DATABASE_URL = "sqlite:///./DB/fastApi.db" 
+DATABASE_URL = "sqlite:////Users/sii/Documents/bootcamp/cleancode/fastapi/DB/fastApi.db"
 
 # Koneksi ke Database
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False, "timeout": 30})
@@ -26,6 +27,14 @@ Base.metadata.create_all(bind=engine)
 
 # Inisialisasi FastAPI
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Mengizinkan semua domain (gunakan domain spesifik di produksi)
+    allow_credentials=True,
+    allow_methods=["*"],  # Mengizinkan semua metode HTTP (GET, POST, PUT, DELETE, dll.)
+    allow_headers=["*"],  # Mengizinkan semua header
+)
 
 # Dependency untuk Session Database
 def get_db():
