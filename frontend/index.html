@@ -6,34 +6,101 @@
     <title>Bootstrap API Form</title>
     <!-- Bootstrap CSS (Cloudflare) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background: #f4f7fc;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container .form-control {
+            border-radius: 8px;
+        }
+
+        .form-container .btn {
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover a {
+            color: #ffd700;
+        }
+
+        .response-box {
+            padding: 15px;
+            background: #f1f1f1;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        /* Tooltip */
+        .tooltip-inner {
+            background-color: #555 !important;
+            color: white !important;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container">
         <h1 class="text-center mb-4">API Form</h1>
-        <form id="apiForm" class="border p-4 rounded">
-            <div class="mb-3">
-                <label for="name" class="form-label">Name:</label>
-                <input type="text" id="name" name="name" class="form-control" placeholder="Maukan nama" required>
+        <div class="form-container">
+            <form id="apiForm">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Enter name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone:</label>
+                    <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter phone number" required>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <button type="button" id="getApiButton" class="btn btn-primary">
+                        <i class="fas fa-download"></i> GET API
+                    </button>
+                    <button type="button" id="postApiButton" class="btn btn-success">
+                        <i class="fas fa-upload"></i> POST API
+                    </button>
+                </div>
+            </form>
+            <div class="d-flex justify-content-between mb-4">
+                <button type="button" class="btn btn-secondary">
+                    <a href="crud.html"><i class="fas fa-table"></i> Show Data</a>
+                </button>
             </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email:</label>
-                <input type="email" id="email" name="email" class="form-control" placeholder="Masuakn email" required>
-            </div>
-            <div class="mb-3">
-                <label for="phone" class="form-label">Phone:</label>
-                <input type="text" id="phone" name="phone" class="form-control" placeholder="Masukan No" required>
-            </div>
-            <div class="d-flex justify-content-between">
-                <button type="button" id="getApiButton" class="btn btn-primary">GET API</button>
-                <button type="button" id="postApiButton" class="btn btn-success">POST API</button>
-            </div>
-        </form>
-        <div class="d-flex justify-content-between mt-4">
-            <button type="button" class="btn btn-secondary">
-                <a href="crud.html" style="color: white; text-decoration: none;">Show Data</a>
-            </button>
+            <div id="response" class="response-box mt-4"></div>
         </div>
-        <div id="response" class="mt-4 p-3 border rounded bg-light"></div>
     </div>
 
     <!-- Bootstrap JS (Cloudflare) -->
@@ -41,24 +108,21 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script>
-        // URL API
-        const apiUrl = 'http://127.0.0.1:8000/customers'; // Ganti dengan URL API yang sebenarnya
+        const apiUrl = 'http://127.0.0.1:8000/customers';
 
-        // GET API Button
         $('#getApiButton').on('click', function () {
             $.ajax({
                 url: apiUrl,
                 method: 'GET',
                 success: function (data) {
-                    $('#response').text(JSON.stringify(data, null, 2));
+                    $('#response').html('<pre>' + JSON.stringify(data, null, 2) + '</pre>');
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    $('#response').text('Error: ' + textStatus + ' - ' + errorThrown);
+                    $('#response').html('<div class="alert alert-danger">Error: ' + textStatus + ' - ' + errorThrown + '</div>');
                 }
             });
         });
 
-        // POST API Button
         $('#postApiButton').on('click', function () {
             const payload = {
                 name: $('#name').val(),
@@ -66,21 +130,20 @@
                 phone: $('#phone').val(),
             };
 
-            const queryString = $.param(payload); // Konversi objek ke string query
-            const apiUrlWithParams = `http://127.0.0.1:8000/customers?${queryString}`;
+            const queryString = $.param(payload);
+            const apiUrlWithParams = `${apiUrl}?${queryString}`;
 
             $.ajax({
-                url: apiUrlWithParams, // URL dengan query parameters
+                url: apiUrlWithParams,
                 method: 'POST',
                 success: function (data) {
-                    $('#response').text(JSON.stringify(data, null, 2));
+                    $('#response').html('<pre>' + JSON.stringify(data, null, 2) + '</pre>');
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    $('#response').text('Error: ' + textStatus + ' - ' + errorThrown);
+                    $('#response').html('<div class="alert alert-danger">Error: ' + textStatus + ' - ' + errorThrown + '</div>');
                 }
             });
         });
     </script>
-
 </body>
 </html>
