@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
@@ -8,6 +8,10 @@ DATABASE_URL = "sqlite:///./DB/fastApi.db"
 
 # Koneksi ke Database
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False, "timeout": 30})
+
+with engine.connect() as connection:
+    connection.execute(text("PRAGMA journal_mode=wal"))
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base untuk ORM
@@ -22,7 +26,7 @@ class Customer(Base):
     phone = Column(String(15), index=True)
 
 # Membuat Tabel jika belum ada
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine,)
 
 # Inisialisasi FastAPI
 app = FastAPI()
