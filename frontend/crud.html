@@ -10,6 +10,8 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">CRUD Operations</h1>
         <button id="fetchData" class="btn btn-primary mb-3">Fetch Data</button>
+        <!-- Tombol Back -->
+        <button id="backBtn" class="btn btn-secondary mb-3">Back</button>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -101,6 +103,11 @@
                     .catch(error => console.error('Error deleting customer:', error));
             }
         }
+
+        // Handle back button click
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.location.href = 'index.html'; // Arahkan ke index.html
+        });
     </script>
 </body>
 </html>
