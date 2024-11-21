@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, Column, Integer, String, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from fastapi.staticfiles import StaticFiles
 
 # Konfigurasi Database (SQLite)
 DATABASE_URL = "sqlite:///./DB/fastApi.db"
@@ -44,6 +45,8 @@ def get_db():
     finally:
         db.close()
 
+app.mount("/static", StaticFiles(directory="./frontend", html=True), name="static")
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Customer API"}
@@ -76,7 +79,7 @@ def create_customer(name: str, email: str, phone: str, db: Session = Depends(get
     existing_customer = db.query(Customer).filter(Customer.email == email).first()
     if existing_customer:
         raise HTTPException(status_code=400, detail="Customer with this email already exists")
-    
+
     new_customer = Customer(name=name, email=email, phone=phone)
     db.add(new_customer)
     db.commit()
@@ -91,7 +94,7 @@ def update_customer(cust_id: int, name: str, email: str, phone: str, db: Session
     customer = db.query(Customer).filter(Customer.id == cust_id).first()
     if not customer:
         raise HTTPException(status_code=404, detail="Customer not found")
-    
+
     customer.name = name
     customer.email = email
     customer.phone = phone
@@ -107,7 +110,7 @@ def delete_customer(cust_id: int, db: Session = Depends(get_db)):
     customer = db.query(Customer).filter(Customer.id == cust_id).first()
     if not customer:
         raise HTTPException(status_code=404, detail="Customer not found")
-    
+
     db.delete(customer)
     db.commit()
     return {"message": "Customer deleted successfully"}
