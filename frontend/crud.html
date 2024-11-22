@@ -89,9 +89,7 @@
 
     <div class="container">
         <h1 class="text-center mb-4">CRUD Operations</h1>
-        <button id="fetchData" class="btn btn-primary mb-3"><i class="fas fa-sync-alt"></i> Fetch Data</button>
-        <button id="backBtn" class="btn btn-secondary mb-3"><i class="fas fa-arrow-left"></i> Back</button>
-        
+
         <!-- Response Message -->
         <div id="responseMessage" class="alert alert-info mb-3"></div>
 
@@ -146,8 +144,8 @@
     <script>
         const apiUrl = 'http://127.0.0.1:8000/customers'; // Ganti dengan URL API yang sesuai
 
-        // Fetch data and populate the table
-        document.getElementById('fetchData').addEventListener('click', async () => {
+        // Fungsi untuk fetch data dan menampilkan di tabel
+        async function fetchData() {
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
@@ -158,6 +156,7 @@
                     document.getElementById('responseMessage').innerText = 'No data found';
                     document.getElementById('responseMessage').style.display = 'block';
                 } else {
+                    document.getElementById('responseMessage').style.display = 'none';
                     data.forEach(customer => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -185,7 +184,10 @@
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
-        });
+        }
+
+        // Jalankan fetch data ketika halaman selesai dimuat
+        document.addEventListener('DOMContentLoaded', fetchData);
 
         // Show Edit Modal
         function showEditModal(button) {
@@ -209,28 +211,25 @@
         document.getElementById('updateForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const id = document.getElementById('updateId').value; // Ambil ID dari input
+            const id = document.getElementById('updateId').value;
             const payload = {
                 name: document.getElementById('updateName').value,
                 email: document.getElementById('updateEmail').value,
                 phone: document.getElementById('updatePhone').value,
             };
 
-            const queryString = new URLSearchParams(payload).toString(); // Konversi payload ke query string
-            const apiUrlWithParams = `${apiUrl}/${id}?${queryString}`; // Gabungkan dengan ID dan query string
-
             try {
-                const response = await fetch(apiUrlWithParams, {
+                const response = await fetch(`${apiUrl}/${id}`, {
                     method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
                 });
                 const data = await response.json();
 
-                // Hide modal and refresh data
-                const updateModal = bootstrap.Modal.getInstance(document.getElementById('updateModal'));
-                updateModal.hide();
-
                 alert('Customer updated successfully!');
-                document.getElementById('fetchData').click();
+                fetchData(); // Refresh data
             } catch (error) {
                 console.error('Error updating customer:', error);
             }
@@ -245,16 +244,11 @@
                     .then(response => response.json())
                     .then(data => {
                         alert('Customer deleted successfully');
-                        document.getElementById('fetchData').click();
+                        fetchData(); // Refresh data
                     })
                     .catch(error => console.error('Error deleting customer:', error));
             }
         }
-
-        // Handle back button click
-        document.getElementById('backBtn').addEventListener('click', () => {
-            window.location.href = 'index.html'; // Arahkan ke index.html
-        });
     </script>
 </body>
 </html>
