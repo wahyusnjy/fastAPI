@@ -4,13 +4,14 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import create_engine, Column, Integer, String, text
-# from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, declarative_base
 from fastapi.staticfiles import StaticFiles
 import os
 
 # Konfigurasi Database (Postgresql)
 DATABASE_URL = "postgresql+psycopg2://admin:password@localhost:5432/fastAPIDTT"
+
+CustomerMsg = 'Customer not found'
 
 # Koneksi ke Database
 engine = create_engine(
@@ -88,7 +89,7 @@ def get_customer(cust_id: int, db: Session = Depends(get_db)):
     """
     customer = db.query(Customer).filter(Customer.id == cust_id).first()
     if not customer:
-        raise HTTPException(status_code=404, detail="Customer not found")
+        raise HTTPException(status_code=404, detail=CustomerMsg)
     return {"id": customer.id, "name": customer.name, "email": customer.email, "phone": customer.phone}
 
 @app.get("/customers")
@@ -98,7 +99,7 @@ def get_all_customers(db: Session = Depends(get_db)):
     """
     customers = db.query(Customer).all()
     if not customers:
-        raise HTTPException(status_code=404, detail="No customers found")
+        raise HTTPException(status_code=404, detail=CustomerMsg)
     return customers
 
 @app.post("/customers")
@@ -123,7 +124,7 @@ def update_customer(cust_id: int, name: str, email: str, phone: str, db: Session
     """
     customer = db.query(Customer).filter(Customer.id == cust_id).first()
     if not customer:
-        raise HTTPException(status_code=404, detail="Customer not found")
+        raise HTTPException(status_code=404, detail=CustomerMsg)
 
     customer.name = name
     customer.email = email
