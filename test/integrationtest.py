@@ -15,13 +15,6 @@ def test_read_root():
     assert response.status_code == 200
     assert response.json() == {"message": "Welcome to the Customer API"}
 
-# def test_get_all_customers_empty():
-#     response = client.get("/customers")
-#     assert response.status_code == 200
-#     assert response.json() == [
-#         {"phone": "9876543210", "name": "Jane Doe", "id": 1, "email": "jane.doe@example.com"}
-#     ]
-
 def test_create_customer():
     global customer_id
     payload = {
