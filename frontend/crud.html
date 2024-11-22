@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRUD Operations</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="/assets/fontawesome/css/all.min.css" rel="stylesheet">
     <style>
         body {
             background: #f4f7fc;
@@ -69,7 +69,6 @@
         <h1 class="text-center mb-4">CRUD Operations</h1>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <button id="backBtn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</button>
-            <button id="excelBtn" class="btn btn-success"><i class="fas fa-file-excel"></i> Export to Excel</button>
         </div>        
         <div id="responseMessage" class="alert alert-info mb-3"></div>
         <table class="table table-bordered table-striped">
@@ -138,8 +137,7 @@
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="/assets/bootstrap/dist/js/bootstrap.bundle.min.js" rel="stylesheet">
 
     <script>
         const apiUrl = 'http://127.0.0.1:8000/customers'; // Replace with your API URL
@@ -265,20 +263,6 @@
                     .catch(error => console.error('Error deleting customer:', error));
             }
         }
-
-        // Export to Excel functionality
-        document.getElementById('excelBtn').addEventListener('click', async () => {
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                const ws = XLSX.utils.json_to_sheet(data);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, 'Data');
-                XLSX.writeFile(wb, 'EmployeeData.xlsx');
-            } catch (error) {
-                console.error('Error exporting to Excel:', error);
-            }
-        });
 
         // Fetch data when the page loads
         document.addEventListener('DOMContentLoaded', fetchData);

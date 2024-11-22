@@ -47,7 +47,16 @@ def get_db():
     finally:
         db.close()
 
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+import os
+
+app = FastAPI()
+
+# Mount static files untuk file HTML dan assets
 app.mount("/static", StaticFiles(directory="./frontend", html=True), name="static")
+app.mount("/assets", StaticFiles(directory="./frontend/assets"), name="assets")
 
 # Fungsi untuk membaca file HTML
 def get_html(file_name: str) -> HTMLResponse:
@@ -57,6 +66,7 @@ def get_html(file_name: str) -> HTMLResponse:
             return HTMLResponse(content=file.read(), status_code=200)
     return HTMLResponse(content="<h1>404 Not Found</h1>", status_code=404)
 
+# Route utama
 @app.get("/pages", response_class=HTMLResponse)
 async def read_root():
     return get_html("home")
@@ -65,6 +75,7 @@ async def read_root():
 @app.get("/pages/{page_name}", response_class=HTMLResponse)
 async def read_page(page_name: str):
     return get_html(page_name)
+
 
 @app.get("/")
 def read_root():
