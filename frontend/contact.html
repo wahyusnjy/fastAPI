@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .contact-section {
+            background-color: #f7f9fc;
+            padding: 60px 0;
+        }
+
+        .contact-title {
+            font-size: 36px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .contact-info {
+            margin-bottom: 30px;
+        }
+
+        .contact-info h4 {
+            font-size: 24px;
+            font-weight: 500;
+            color: #00f2fe;
+            margin-bottom: 15px;
+        }
+
+        .contact-info p {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .contact-form {
+            background-color: #ffffff;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .contact-form label {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .contact-form .form-control {
+            margin-bottom: 20px;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+
+        .contact-form .btn {
+            border-radius: 25px;
+            background-color: #00f2fe;
+            border: none;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .contact-form .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .map-container {
+            margin-top: 40px;
+            height: 400px;
+        }
+
+        .footer {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand fw-bold" href="home.html" style="color: #000000; font-size: 24px;">
+                <i class="fas fa-users"></i> EmployeeApp
+            </a>
+    
+            <!-- Toggle button for mobile view -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <!-- Links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="home.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Add User</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <h1 class="contact-title">Get in Touch with Us</h1>
+
+        <div class="container">
+            <div class="row">
+                <!-- Contact Info -->
+                <div class="col-md-6 contact-info">
+                    <h4>Our Office</h4>
+                    <p>Business Avenue, Suite 500, <br> Kuningan, INDONESIA</p>
+
+                    <h4>Contact Details</h4>
+                    <p><i class="fas fa-phone-alt"></i> Phone: +62 1223345789</p>
+                    <p><i class="fas fa-envelope"></i> Email: info@employeeapp.com</p>
+
+                    <h4>Follow Us</h4>
+                    <p>
+                        <a href="#" class="text-decoration-none me-3"><i class="fab fa-facebook-square"></i></a>
+                        <a href="#" class="text-decoration-none me-3"><i class="fab fa-twitter-square"></i></a>
+                        <a href="#" class="text-decoration-none"><i class="fab fa-linkedin"></i></a>
+                    </p>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="col-md-6">
+                    <div class="contact-form">
+                        <h4>Contact Form</h4>
+                        <form id="contactForm">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Your Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Your Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Your Message</label>
+                                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Google Maps Embed -->
+            <div class="map-container">
+                <h4 class="text-center">Our Location</h4>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d506673.9840047232!2d107.91624977500001!3d-6.8789713!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e37e485dce83%3A0x94c20c9c39d63e77!2sKuningan%2C%20West%20Java%2C%20Indonesia!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" 
+                width="100%" 
+                height="400" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 EmployeeApp. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

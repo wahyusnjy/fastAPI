@@ -57,6 +57,36 @@
     </style>
 </head>
 <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="home.html" style="color: #000000; font-size: 24px; padding-left: 60px;">
+                <i class="fas fa-users"></i> EmployeeApp
+            </a>
+    
+            <!-- Toggle button for mobile view -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="home.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Add User</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <h1 class="text-center mb-4">CRUD Operations</h1>
         <button id="fetchData" class="btn btn-primary mb-3"><i class="fas fa-sync-alt"></i> Fetch Data</button>
@@ -179,18 +209,19 @@
         document.getElementById('updateForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const id = document.getElementById('updateId').value;
-            const name = document.getElementById('updateName').value;
-            const email = document.getElementById('updateEmail').value;
-            const phone = document.getElementById('updatePhone').value;
+            const id = document.getElementById('updateId').value; // Ambil ID dari input
+            const payload = {
+                name: document.getElementById('updateName').value,
+                email: document.getElementById('updateEmail').value,
+                phone: document.getElementById('updatePhone').value,
+            };
+
+            const queryString = new URLSearchParams(payload).toString(); // Konversi payload ke query string
+            const apiUrlWithParams = `${apiUrl}/${id}?${queryString}`; // Gabungkan dengan ID dan query string
 
             try {
-                const response = await fetch(`${apiUrl}/${id}`, {
+                const response = await fetch(apiUrlWithParams, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ name, email, phone }),
                 });
                 const data = await response.json();
 
