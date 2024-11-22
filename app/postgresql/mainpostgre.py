@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Depends, HTTPException
@@ -6,6 +7,7 @@ from sqlalchemy import create_engine, Column, Integer, String, text
 # from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, declarative_base
 from fastapi.staticfiles import StaticFiles
+import os
 
 # Konfigurasi Database (Postgresql)
 DATABASE_URL = "postgresql+psycopg2://admin:password@localhost:5432/fastAPIDTT"
@@ -57,6 +59,23 @@ def get_db():
         db.close()
 
 app.mount("/static", StaticFiles(directory="./frontend", html=True), name="static")
+
+# Fungsi untuk membaca file HTML
+def get_html(file_name: str) -> HTMLResponse:
+    file_path = os.path.join("./frontend", f"{file_name}.html")
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as file:
+            return HTMLResponse(content=file.read(), status_code=200)
+    return HTMLResponse(content="<h1>404 Not Found</h1>", status_code=404)
+
+@app.get("/pages", response_class=HTMLResponse)
+async def read_root():
+    return get_html("home")
+
+# Route untuk setiap halaman
+@app.get("/pages/{page_name}", response_class=HTMLResponse)
+async def read_page(page_name: str):
+    return get_html(page_name)
 
 @app.get("/")
 def read_root():
