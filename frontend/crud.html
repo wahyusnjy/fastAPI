@@ -234,8 +234,11 @@
                 phone: document.getElementById('updatePhone').value,
             };
 
+            const queryString = new URLSearchParams(payload).toString(); // Konversi payload ke query string
+            const apiUrlWithParams = `${apiUrl}/${id}?${queryString}`; // Gabungkan dengan ID dan query string
+
             try {
-                const response = await fetch(`${apiUrl}/${id}`, {
+                const response = await fetch(apiUrlWithParams, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
