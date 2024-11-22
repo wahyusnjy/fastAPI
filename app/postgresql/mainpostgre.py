@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker, Session, declarative_base
 from fastapi.staticfiles import StaticFiles
 
 # Konfigurasi Database (Postgresql)
-DATABASE_URL = "postgresql+psycopg2://gugugaga:password@localhost:5432/fastAPIDTT"
+DATABASE_URL = "postgresql+psycopg2://admin:password@localhost:5432/fastAPIDTT"
 
 # Koneksi ke Database
 engine = create_engine(
