@@ -8,6 +8,7 @@ from app.sqlite.main import app
 from urllib.parse import urlencode
 
 client = TestClient(app)
+customer_id = None
 
 def test_read_root():
     response = client.get("/")
@@ -21,35 +22,40 @@ def test_read_root():
 #         {"phone": "9876543210", "name": "Jane Doe", "id": 1, "email": "jane.doe@example.com"}
 #     ]
 
-# def test_create_customer():
-#     payload = {
-#         "name": "John Doe",
-#         "email": "john.doe@example.com",
-#         "phone": "1234567890"
-#     }
-#     query_string = urlencode(payload)
-#     response = client.post(f"/customers?{query_string}")
-#     assert response.status_code == 200
-#     assert response.json()["message"] == "Customer created successfully"
-#     assert response.json()["customer"]["name"] == "John Doe"
+def test_create_customer():
+    global customer_id
+    payload = {
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "phone": "1234567890"
+    }
+    query_string = urlencode(payload)
+    response = client.post(f"/customers?{query_string}")
+    assert response.status_code == 200
+    assert response.json()["message"] == "Customer created successfully"
+    assert response.json()["customer"]["name"] == "John Doe"
+    customer_id = response.json()["customer"]["id"]
 
 def test_get_customer():
-    response = client.get("/customers/4")
+    global customer_id
+    response = client.get(f"/customers/{customer_id}")
     assert response.status_code == 200
     assert response.json()["name"] == "John Doe"
 
 def test_update_customer():
+    global customer_id
     updated_payload = {
         "name": "John Doe",
-        "email": "john.updated@example.com",
+        "email": "john.dobleh@example.com",
         "phone": "5559876543"
     }
     query_string_update = urlencode(updated_payload)
-    response = client.put(f"/customers/4?{query_string_update}")
+    response = client.put(f"/customers/{customer_id}?{query_string_update}")
     assert response.status_code == 200
     assert response.json()["customer"]["name"] == "John Doe"
 
 def test_delete_customer():
-    response = client.delete("/customers/4")
+    global customer_id
+    response = client.delete(f"/customers/{customer_id}")
     assert response.status_code == 200
     assert response.json()["message"] == "Customer deleted successfully"
